@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="/static/plugins/bootstrap-5.3.2-dist/css/bootstrap.css"> 
+    <link rel="stylesheet" href="/static/css/common.css">
+    <style>
+        .navbar-brand {
+            margin-right: auto; 
+        }
+
+        .navbar-text {
+            margin-left: auto; 
+        }
+
+        .container {
+            width: 1128px; 
+            margin: 0 auto;
+        }
+        
+        .content-container {
+            margin-top: 20px; 
+            margin-bottom: 20px; 
+        }
+
+        .same-length {
+          width: 65px;
+        }
+    </style>
+</head>
+<body>
+  <div style="color: #000; background-color: RGBA(var(--bs-light-rgb), var(--bs-bg-opacity, 1));">
+    <nav class="navbar navbar-expand-lg navbar-light bg-light container">
+      <a class="navbar-brand" href="#" style="margin-left:20px">System</a>
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarText">
+        <ul class="navbar-nav mr-auto">
+          <li class="nav-item active">
+            <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
+          </li>
+        </ul>
+        <a href="your_signin_page.html" class="navbar-text" style="margin-right:20px;text-decoration: none">Sign in</a>
+      </div>
+    </nav>
+  </div>
+  
+  <div class="container content-container caption-top">
+    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil-square" viewBox="0 0 16 16">
+      <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"/>
+      <path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5z"/>
+    </svg>
+    <a href = "/create" type = "button" class="btn btn-success"> Create new profile </a>
+   
+  </div>
+  
+  <div class="container content-container">
+    <table class="table table-bordered table-hover caption-top">
+     
+      <caption>
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-list-ul" viewBox="0 0 16 16">
+        <path fill-rule="evenodd" d="M5 11.5a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9a.5.5 0 0 1-.5-.5m0-4a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9a.5.5 0 0 1-.5-.5m0-4a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9a.5.5 0 0 1-.5-.5m-3 1a1 1 0 1 0 0-2 1 1 0 0 0 0 2m0 4a1 1 0 1 0 0-2 1 1 0 0 0 0 2m0 4a1 1 0 1 0 0-2 1 1 0 0 0 0 2"/>
+        </svg>
+        List of users
+      </caption>
+     
+      <thead>
+        <tr>
+          <th scope="col">id</th>
+          <th scope="col">Username</th>
+          <th scope="col">First</th>
+          <th scope="col">Last</th>
+          <th scope="col">Age</th>
+          <th scope="col">Mobile</th>
+          <th scope="col">Handle</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for item in dict_lst %}
+        <tr>
+          <td>{{item.id}}</td>
+          <td>{{item.username}}</td>
+          <td>{{item.first_name}}</td>
+          <td>{{item.last_name}}</td>
+          <td>{{item.age}}</td>
+          <td>{{item.mobile}}</td>
+          <td>
+            <a href = "/edit/{{item.id}}" type="button" class="btn btn-info btn-sm same-length">Edit</a>
+            <form action="/delete/{{ item.id }}" method="post" style="display: inline;">
+              <button type="submit" class="btn btn-danger btn-sm same-length">Delete</button>
+            </form>
+          </td>
+        </tr>
+
+      {% endfor %}
+        
+          
+      
+      </tbody>
+    </table>
+  </div>
+  <div class="container content-container">
+    <nav aria-label="Page navigation example">
+      <ul class="pagination">
+        <li class="page-item">
+          <a class="page-link" href="#" aria-label="Previous">
+            <span aria-hidden="true">&laquo;</span>
+          </a>
+        </li>
+        <li class="page-item"><a class="page-link" href="#">1</a></li>
+        <li class="page-item"><a class="page-link" href="#">2</a></li>
+        <li class="page-item"><a class="page-link" href="#">3</a></li>
+        <li class="page-item">
+          <a class="page-link" href="#" aria-label="Next">
+            <span aria-hidden="true">&raquo;</span>
+          </a>
+        </li>
+      </ul>
+    </nav>
+  </div>
+ 
+
+  <script src = '/static/jquery-3.7.1.js'></script>
+  <script src = '/static/plugins/bootstrap-5.3.2-dist/js/bootstrap.bundle.js'></script>
+</body>
+</html>

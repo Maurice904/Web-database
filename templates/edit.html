@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Edit User</title>
+    <link rel="stylesheet" href="/static/plugins/bootstrap-5.3.2-dist/css/bootstrap.css">
+    <link rel="stylesheet" href="/static/css/common.css">
+</head>
+
+<body>
+    <div class="container" style="margin-top: 20px">
+        <form method="post" action="/edit/{{user.id }}">
+           
+            <input type="hidden" name="user_id" value="{{user.id}}">
+            <div class="mb-3 row clearfix">
+                <div class='col'>
+                    <label for="username" class="form-label">Username</label>
+                   
+                    <input type="text" class="form-control" name="name_username" id="username" value="{{user.username}}">
+                </div>
+                <div class='col'>
+                    <label for="password" class="form-label">Password</label>
+                  
+                    <input type="password" class="form-control" name="name_pwd" id="password" value="{{user.password}}">
+                </div>
+            </div>
+            <div class="mb-3 row clearfix">
+                <div class='col'>
+                    <label for="First" class="form-label">First Name</label>
+                   
+                    <input type="text" class="form-control" name="name_first" id="First" value="{{user.first_name}}">
+                </div>
+                <div class='col'>
+                    <label for="Last" class="form-label">Last Name</label>
+                   
+                    <input type="text" class="form-control" name="name_last" id="Last" value="{{user.last_name}}">
+                </div>
+            </div>
+            <div class="mb-3 row clearfix">
+                <div class='col'>
+                    <label for="age" class="form-label">Age</label>
+                
+                    <input type="number" class="form-control" name="name_age" id="age" value="{{user.age}}">
+                </div>
+                <div class='col'>
+                    <label for="mobile" class="form-label">Mobile number</label>
+                    
+                    <input type="text" class="form-control" name="name_mobile" id="mobile" value="{{user.mobile}}">
+                </div>
+            </div>
+            <button type="submit" class="btn btn-primary" style='margin-top:20px;'>Update</button>
+        </form>
+    </div>
+    <script src='/static/jquery-3.7.1.js'></script>
+    <script src='/static/plugins/bootstrap-5.3.2-dist/js/bootstrap.bundle.js'></script>
+</body>
+
+</html>
