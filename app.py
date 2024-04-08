@@ -5,7 +5,7 @@ import pymysql
 import os
 
 app = Flask(__name__)
-app.secret_key = 'your_secret_key_here'
+app.secret_key = 'place_holder'
 
 bcrypt = Bcrypt(app)
 
@@ -106,6 +106,7 @@ def add_user():
 
 
 @app.route('/manage')
+@login_required
 def manage():
     conn = pymysql.connect(host = "127.0.0.1", port = 3306, user = 'Tianhao', passwd = 'root123', charset = 'utf8', db = 'unicom')
     cursor = conn.cursor(cursor = pymysql.cursors.DictCursor)
@@ -138,6 +139,7 @@ def delete_item(item_id):
     return redirect(url_for('manage'))
 
 @app.route('/edit/<int:user_id>', methods=['GET', 'POST'])
+@login_required
 def edit_user(user_id):
     if request.method == 'POST':
         user = request.form.get('name_username')
@@ -170,6 +172,11 @@ def edit_user(user_id):
         conn.close()
         return render_template('edit.html', user=user)
 
+@app.route('/logout')
+@login_required
+def logout():
+    logout_user()
+    return redirect(url_for('login'))
 
 
 if __name__ == '__main__':
