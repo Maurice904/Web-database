@@ -1,20 +1,50 @@
-from flask import Flask, render_template, request, redirect, url_for
-import pymysql
+from flask import Flask, request, redirect, url_for, render_template, flash
+from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
 from flask_bcrypt import Bcrypt
+import pymysql
+import os
 
 app = Flask(__name__)
+app.secret_key = 'your_secret_key_here'
 
-def check_validation(user, pwd):
-    conn = pymysql.connect(host=host, port=3306, user='Tianhao', passwd='root123', charset='utf8', db='unicom')
-    cursor = conn.cursor(cursor=pymysql.cursors.DictCursor)
-    sql = "SELECT * FROM admin WHERE username = %s"
-    cursor.execute(sql, [user])
+bcrypt = Bcrypt(app)
+
+login_manager = LoginManager()
+login_manager.init_app(app)
+login_manager.login_view = 'login'
+
+class User(UserMixin):
+    pass
+
+def load_user(user_id):
+    conn = pymysql.connect(host=os.getenv("DB_HOST", "127.0.0.1"), 
+                           user=os.getenv("DB_USER", "Tianhao"), 
+                           passwd=os.getenv("DB_PASSWORD", "root123"), 
+                           db=os.getenv("DB_NAME", "unicom"), 
+                           charset='utf8')
+    cursor = conn.cursor(pymysql.cursors.DictCursor)
+    cursor.execute("SELECT * FROM admin WHERE id = %s", (user_id,))
+    user_record = cursor.fetchone()
+    if user_record:
+        user = User()
+        user.id = user_record['id']
+        return user
+    return None
+
+def check_validation(username, password):
+    conn = pymysql.connect(host=os.getenv("DB_HOST", "127.0.0.1"), 
+                           user=os.getenv("DB_USER", "Tianhao"), 
+                           passwd=os.getenv("DB_PASSWORD", "root123"), 
+                           db=os.getenv("DB_NAME", "unicom"), 
+                           charset='utf8')
+    cursor = conn.cursor(pymysql.cursors.DictCursor)
+    cursor.execute("SELECT * FROM admin WHERE username = %s", (username,))
     user_record = cursor.fetchone()
     cursor.close()
     conn.close()
-    if user_record and bcrypt.check_password_hash(user_record['pwd'], pwd):
-        return True, True
-    return False, False
+    if user_record and bcrypt.check_password_hash(user_record['pwd'], password):
+        return user_record['id']
+    return None
 
 @app.route('/register', methods = ['POST', 'GET'])
 def do_register():
@@ -27,20 +57,24 @@ def do_register():
         return 'register complete'
     
 
-@app.route('/login', methods = ['POST', 'GET'])
+@app.route('/login', methods=['GET', 'POST'])
 def login():
-    if request.method == 'GET':
-        return render_template('login.html')
-    else:
-        user = request.form.get('name_username')
-        pwd = request.form.get('name_pwd')
-        print (user, pwd)
+    if current_user.is_authenticated:
+        return redirect(url_for('manage'))
 
-        success, error = check_validation(user, pwd)
-        if success:
+    if request.method == 'POST':
+        username = request.form['name_username']
+        password = request.form['name_pwd']
+        user_id = check_validation(username, password)
+        if user_id:
+            user = User()
+            user.id = user_id
+            login_user(user)
             return redirect(url_for('success'))
         else:
-            return render_template('login.html')
+            flash('Invalid username or password')
+
+    return render_template('login.html')
 
 
 @app.route('/create', methods = ['POST', 'GET'])
