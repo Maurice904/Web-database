@@ -1,22 +1,20 @@
 from flask import Flask, render_template, request, redirect, url_for
 import pymysql
+from flask_bcrypt import Bcrypt
 
 app = Flask(__name__)
 
 def check_validation(user, pwd):
-    conn = pymysql.connect(host = "127.0.0.1", port = 3306, user = 'Tianhao', passwd = 'root123', charset = 'utf8', db = 'unicom')
-    cursor = conn.cursor(cursor = pymysql.cursors.DictCursor)
-    sql = "select * from admin where username = %s"
+    conn = pymysql.connect(host=host, port=3306, user='Tianhao', passwd='root123', charset='utf8', db='unicom')
+    cursor = conn.cursor(cursor=pymysql.cursors.DictCursor)
+    sql = "SELECT * FROM admin WHERE username = %s"
     cursor.execute(sql, [user])
-    pwd_lst = cursor.fetchall()
+    user_record = cursor.fetchone()
     cursor.close()
     conn.close()
-    for dict_ in pwd_lst:
-        if dict_['pwd'] == pwd:
-            return True, True
-
+    if user_record and bcrypt.check_password_hash(user_record['pwd'], pwd):
+        return True, True
     return False, False
-
 
 @app.route('/register', methods = ['POST', 'GET'])
 def do_register():
