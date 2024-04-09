@@ -78,6 +78,7 @@ def login():
 
 
 @app.route('/create', methods = ['POST', 'GET'])
+@login_required
 def add_user():
     if request.method == 'GET':
         return render_template('create.html')
@@ -119,15 +120,18 @@ def manage():
 
 
 @app.route('/success')
+@login_required
 def success():
     return render_template('success.html')
 
 
 @app.route('/created')
+@login_required
 def created():
     return render_template('account_created.html')
 
 @app.route('/delete/<int:item_id>', methods=['POST'])
+@login_required
 def delete_item(item_id):
     conn = pymysql.connect(host = "127.0.0.1", port = 3306, user = 'Tianhao', passwd = 'root123', charset = 'utf8', db = 'unicom')
     cursor = conn.cursor(cursor = pymysql.cursors.DictCursor)
