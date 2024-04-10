@@ -54,16 +54,18 @@ def login():
         return redirect(url_for('manage'))
 
     if request.method == 'POST':
-        username = request.form['name_username']
-        password = request.form['name_pwd']
-        user_id = check_validation(username, password)
-        if user_id:
-            user = User()
-            user.id = user_id
-            login_user(user)
-            return redirect(url_for('success'))
-        else:
-            flash('Invalid username or password')
+        try:
+            username = request.form['name_username']
+            password = request.form['name_pwd']
+            user_id = check_validation(username, password)
+            if user_id:
+                user = User()
+                user.id = user_id
+                login_user(user)
+                return redirect(url_for('success'))
+        except Exception as e:
+            print (e)
+            return render_template('error.html')
 
     return render_template('login.html')
 
