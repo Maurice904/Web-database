@@ -16,6 +16,7 @@ login_manager.login_view = 'login'
 class User(UserMixin):
     pass
 
+@login_manager.user_loader
 def load_user(user_id):
     conn = pymysql.connect(host=os.getenv("DB_HOST", "127.0.0.1"), 
                            user=os.getenv("DB_USER", "Tianhao"), 
@@ -44,21 +45,11 @@ def check_validation(username, password):
     conn.close()
     if user_record and bcrypt.check_password_hash(user_record['pwd'], password):
         return user_record['id']
-    return None
-
-@app.route('/register', methods = ['POST', 'GET'])
-def do_register():
-    if request.method == 'GET':
-        return render_template('register.html')
-    else:
-        user = request.form.get('user')
-        pwd = request.form.get('pwd')
-        print (user, pwd)
-        return 'register complete'
-    
+    return None    
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
+
     if current_user.is_authenticated:
         return redirect(url_for('manage'))
 
@@ -78,13 +69,13 @@ def login():
 
 
 @app.route('/create', methods = ['POST', 'GET'])
-@login_required
 def add_user():
     if request.method == 'GET':
         return render_template('create.html')
     else:
         user = request.form.get('name_username')
         pwd = request.form.get('name_pwd')
+        pwd_hash = bcrypt.generate_password_hash(pwd).decode('utf-8')
         first_name = request.form.get('name_first')
         last_name = request.form.get('name_last')
         age = request.form.get('name_age')
@@ -94,7 +85,7 @@ def add_user():
             conn = pymysql.connect(host = "127.0.0.1", port = 3306, user = 'Tianhao', passwd = 'root123', charset = 'utf8', db = 'unicom')
             cursor = conn.cursor(cursor = pymysql.cursors.DictCursor)
             sql = "insert into admin (username, pwd, first_name, last_name, age, mobile) values(%s,%s,%s,%s,%s,%s)"
-            cursor.execute(sql, [user,pwd,first_name,last_name,age,mobile])
+            cursor.execute(sql, [user,pwd_hash,first_name,last_name,age,mobile])
             conn.commit()
 
             cursor.close()
